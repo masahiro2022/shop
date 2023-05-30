@@ -1,0 +1,201 @@
+public ShopUI() {
+		setFont(new Font("Dialog", Font.BOLD, 14));
+		setBackground(new Color(128, 64, 0));
+		setTitle("KOMAME的藥草屋");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 578, 569);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        
+              // 設定 JFrame 的 icon
+             ImageIcon icon = new ImageIcon("picture\\komame.jpg");
+              
+              //設定顯示欄不可直接修改  只能使用規定好的方法
+              //訂單不會覆蓋前一筆資料
+                JTextArea outPut = new JTextArea();
+		outPut.setBackground(new Color(192, 192, 192));
+		outPut.setForeground(new Color(0, 0, 0));
+		outPut.setBounds(85, 294, 354, 192);
+		panel_1.add(outPut);
+		outPut.setEditable(false);
+		
+              //設定卷軸 資料太長可下拉檢視
+		JScrollPane scrollPane = new JScrollPane(outPut);
+		scrollPane.setBounds(85, 294, 354, 192);
+		panel_1.add(scrollPane);
+	
+		//清除功能鍵  
+		JButton clear = new JButton("清除");
+		clear.setBounds(368, 136, 87, 39);
+		clear.setFont(new Font("新細明體", Font.BOLD, 14));
+		clear.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				RV.setText("0");
+				BV.setText("0");
+				OV.setText("0");
+				GV.setText("0");
+				outPut.setText("");
+			}
+		});
+		panel_1.add(clear);
+		
+		//計算功能
+		JButton Cal = new JButton("計算");
+		Cal.setBounds(368, 74, 87, 39);
+		Cal.setFont(new Font("新細明體", Font.BOLD, 14));
+		Cal.addMouseListener(new MouseAdapter() {
+			private double discount;
+            
+			@Override
+			public void mouseClicked(MouseEvent e) {
+								
+				String rv=RV.getText();
+				String bv=BV.getText();
+				String ov=OV.getText();
+				String gv=GV.getText();
+														
+				
+          //先try-catch 抓出NumberFormatException 無法轉成int的文字,可以轉換的話再繼續進行計算
+                try {
+                	    				
+                	int a =Integer.parseInt(rv);
+    			    int b =Integer.parseInt(bv);
+    			    int c =Integer.parseInt(ov);
+    			    int d =Integer.parseInt(gv);
+    			  		    	
+   					Shop z=new Shop(a,b,c,d);
+   					if (memberB.isSelected()) {
+   			            discount = 0.9;  //  一般會員折扣為 0.9
+   			        } else if (memberC.isSelected()) {
+   			            discount = 0.7;  // 高級會員 折扣為 0.7
+   			        } else {
+   			            discount = 1.0;  // 無會員 無折扣為 1.0
+   			        }
+
+   		               //只顯示有購買的項目			
+    				outPut.append(z.show());
+    				
+    				if(z.getRP()!=0) outPut.append(z.show2());
+    				
+    				if(z.getBP()!=0) outPut.append(z.show3());
+    				
+    				if(z.getOP()!=0) outPut.append(z.show4());
+    				
+    				if(z.getGP()!=0) outPut.append(z.show5());
+    				
+    				outPut.append("\n==============="+
+    		                   "\n總計:"+(int)(z.getSum()*+discount)+"元\n");
+    				
+                } catch (NumberFormatException ex) {
+                    outPut.setText("輸入的數字有誤,請再重新輸入大於等於0的整數");
+                                RV.setText("");
+    				BV.setText("");
+    				OV.setText("");
+    				GV.setText("");   				
+                }						    			    
+			   
+			}
+		});
+		panel_1.add(Cal);
+		
+               //關閉程式功能鍵
+		JButton off = new JButton("離開");
+		off.setBounds(368, 196, 87, 39);
+		off.setFont(new Font("新細明體", Font.BOLD, 14));
+		off.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.exit(0);
+			}			
+		});
+		panel_1.add(off);
+				
+				
+		//設定背景圖片
+		JLabel lblNewLabel_2 = new JLabel("New label");
+		lblNewLabel_2.setForeground(new Color(255, 128, 192));
+		lblNewLabel_2.setIcon(new ImageIcon("picture\\bg.jpg"));
+		lblNewLabel_2.setBounds(0, 0, 542, 510);
+		panel_1.add(lblNewLabel_2);
+ =========================================================
+public class Shop {
+      private int RP;
+      private int BP;
+      private int OP;
+      private int GP;     
+      private int sum;
+	
+	public Shop(int rP, int bP, int oP, int gP) {
+		super();
+		if(rP>=0&&bP>=0&&oP>=0&&gP>=0) {
+		this.RP = rP;
+		this.BP = bP;
+		this.OP = oP;
+		this.GP = gP;		
+		sum=rP*50+bP*70+oP*90+gP*80;
+		}		
+
+	}
+	public int getRP() {
+		return RP;
+	}
+	public void setRP(int RV2) {
+		RP = RV2;
+	}
+	public int getBP() {
+		return BP;
+	}
+	public void setBP(int bP) {
+		BP = bP;
+	}
+	public int getOP() {
+		return OP;
+	}
+	public void setOP(int oP) {
+		OP = oP;
+	}
+	public int getGP() {
+		return GP;
+	}
+	public void setGP(int gP) {
+		GP = gP;
+	}
+	public int getSum() {
+       
+        return sum;
+    }
+    public String show() {
+    	String t = "您的訂單細目:"+
+	               "\n===============";		 
+        return t;
+        
+    }
+    public String show2() {
+    	String t = "\n紅色藥水:"+getRP()+"瓶";
+                   
+        return t;
+    }
+    
+    public String show3() {
+    	String t = "\n藍色藥水:"+getBP()+"瓶";
+                  
+        return t;
+    }
+    
+    public String show4() {
+    	String t = "\n橙色藥水:"+getOP()+"瓶";
+     return t;
+   }
+    
+    public String show5() {
+    	String t = "\n綠色藥水:"+getGP()+"瓶";
+        return t;
+    }
+    
+    public String show6() {
+    	String t = "\n==============="+
+                   "\n總計:"+getSum()+"元\n";
+        return t;
+    }
+}
